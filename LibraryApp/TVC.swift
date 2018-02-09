@@ -17,50 +17,17 @@ import UIKit
 class TVC: UITableViewController {
     @IBOutlet weak var libroABuscar: UITextField!
      var nombre = [ControlLibro]()
+    var codigo = ""
     
     
-    
-    @IBAction func Add(_ sender: Any) {
-        var nombreee = String()
-        let urls = "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:"
-        let url = NSURL(string: urls + libroABuscar.text!)
-        let datos = NSData(contentsOf: url! as URL)
-        
-        if (datos == nil || libroABuscar.text! == "" )
-             {
-                showAlertMessage(title: "Aviso", message: "No se ha podido conectar al servicio. Favor de reintentar más tarde")
-                return
-            }
-        
-            do
-            {
-                /*
-                 do{
-                 let jsonResponse = try JSONSerialization.jsonObject(with: contentData! as Data, options: []) as! NSDictionary
-                */
-                let json = try JSONSerialization.jsonObject(with: datos! as Data, options: JSONSerialization.ReadingOptions.mutableLeaves)
-                  let jsonResponse = try JSONSerialization.jsonObject(with: datos! as Data, options: []) as! NSDictionary
-                if(jsonResponse.count == 0 )
-                {
-                    showAlertMessage(title: "Aviso", message: "No se ha encontrado un libro con el ISBN proporcionado.")
-                    return
-                }
-                let dico1 = json as! NSDictionary
-                let dico2 = dico1["ISBN:\(libroABuscar.text!)"] as! NSDictionary
-                nombreee = dico2["title"] as! NSString as String
-                
-            }
-            catch _ {
-                
-            }
-        let newIndexPath = IndexPath(row: libros.count, section: 0)
-        self.libros.append([nombreee,libroABuscar.text!])
-        tableView.insertRows(at: [newIndexPath], with: .automatic)
-        
-      
+
+ var libros : Array<Array<String>> = Array<Array<String>>()
+    override func viewWillAppear(_ animated: Bool) {
+        for libro in libros
+        {
+            print(libro)
+        }
     }
-    private var libros : Array<Array<String>> = Array<Array<String>>()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -100,13 +67,7 @@ class TVC: UITableViewController {
 
         return cell
     }
-    func showAlertMessage(title: String, message:String)
-    {
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -152,11 +113,21 @@ class TVC: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     
-        let cc = segue.destination as! ControlLibro
-        let ip = self.tableView.indexPathForSelectedRow
-        cc.codigo = self.libros[(ip?.row)!][1]
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if(segue.identifier! == "resultado")
+        {
+        let destination = segue.destination as! Resultados
+        destination.anterior = self
+        }
+        else
+        {
+            let cc = segue.destination as! ControlLibro
+            let ip = self.tableView.indexPathForSelectedRow
+            cc.codigo = self.libros[(ip?.row)!][1]
+        }
+//
+
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
