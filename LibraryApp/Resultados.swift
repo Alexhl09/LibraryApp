@@ -7,10 +7,11 @@
 //
 
 import UIKit
-
+import CoreData
 class Resultados: UIViewController {
 
-    
+//    var contexto : NSManagedObjectContext? = nil
+    var libro:[Libros]? = nil
     @IBOutlet weak var codigoIsbn: UITextField!
     @IBOutlet weak var imag: UIImageView!
     @IBOutlet weak var autor: UILabel!
@@ -40,7 +41,9 @@ class Resultados: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       
+        
+   
     }
     
     override func didReceiveMemoryWarning() {
@@ -59,6 +62,8 @@ class Resultados: UIViewController {
     @IBAction func buscar(_ sender: Any)
     {
         codigo = codigoIsbn.text!
+//        self.contexto = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+//        let nuevaSeccionEntidad = NSEntityDescription.insertNewObject(forEntityName: "Libros", into: self.contexto!)
         let urls = "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:"
         let url = NSURL(string: urls + codigo)
         let datos = NSData(contentsOf: url! as URL)
@@ -91,18 +96,34 @@ class Resultados: UIViewController {
             catch _ {
                 
             }
+           
             isbn.text = codigoIsbn.text!
-            nombreDeLibro.text = nombreLibro
-            imag.image = imagenLibro
+//            nuevaSeccionEntidad.setValue(codigoIsbn.text!, forKey: "isbn")
+//            nuevaSeccionEntidad.setValue(autorLibro, forKey: "autor")
+              nombreDeLibro.text = nombreLibro
+//            nuevaSeccionEntidad.setValue(nombreLibro, forKey: "nombre")
+              imag.image = imagenLibro
+//            nuevaSeccionEntidad.setValue(UIImagePNGRepresentation(imagenLibro), forKey: "portada")
+            CoreDataHandler.saveObject(nombre: nombreLibro, autor: autorLibro, isbn: isbn.text!, portada: UIImagePNGRepresentation(imagenLibro) as! NSData)
             autor.text = autorLibro
-        }
-
+           
+            
+          }
+//        do
+//        {
+//            try self.contexto?.save()
+//        }
+//        catch
+//        {
+//
+//        }
+        
         let newIndexPath = IndexPath(row: anterior.libros.count, section: 0)
         anterior.libros.append([nombreLibro,isbn.text!])
         anterior.tableView.insertRows(at: [newIndexPath], with: .automatic)
        
     }
-    
+  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         

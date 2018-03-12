@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+       
+     
+        
         return true
     }
 
@@ -45,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Core Data stack
-
+   
     lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation
@@ -72,7 +75,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
-
+   
+    lazy var applicationDocumentsDirectory : NSURL =
+        {
+            let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return urls[urls.count-1] as NSURL
+    }()
+    
+    lazy var managedObjectModel : NSManagedObjectModel =
+        {
+            let modelURL = Bundle.main.url(forResource: "LibraryApp", withExtension: "momd")!
+            return NSManagedObjectModel(contentsOf: modelURL)!
+    }()
+    lazy var persistentStoreCoordinator : NSPersistentStoreCoordinator =
+        {
+            let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
+            let url = self.applicationDocumentsDirectory.appendingPathComponent("SingleViewCoreData.sqlite")
+            var failureReason = "There was an error creating or loading the application's saved data"
+            do {
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+            }
+            catch
+            {
+                var dict = [String : Any]()
+                dict[NSLocalizedDescriptionKey] = "Failed to inicialize the application´s saved data"
+                dict[NSLocalizedFailureReasonErrorKey] = failureReason
+                dict[NSUnderlyingErrorKey] = error as NSError
+                let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
+                NSLog("Unsolved error\(wrappedError), \(wrappedError.userInfo)")
+                abort()
+            }
+            return coordinator
+    }()
+    lazy var managedObjectContext : NSManagedObjectContext =
+        {
+            let coordinator = self.persistentStoreCoordinator
+            var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+            managedObjectContext.persistentStoreCoordinator = coordinator
+            return managedObjectContext
+    }()
     // MARK: - Core Data Saving support
 
     func saveContext () {

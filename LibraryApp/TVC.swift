@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 /*
  ISBN:
  9788498382549
@@ -14,25 +15,32 @@ import UIKit
  9782277228943
  */
 
-class TVC: UITableViewController {
+class TVC: UITableViewController, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var libroABuscar: UITextField!
-     var nombre = [ControlLibro]()
+    @IBOutlet weak var activity: UIActivityIndicatorView!
+    var nombre = [ControlLibro]()
     var codigo = ""
-    
-    
+//    var contexto  : NSManagedObjectContext? = nil
 
  var libros : Array<Array<String>> = Array<Array<String>>()
+  
     override func viewWillAppear(_ animated: Bool) {
-        for libro in libros
-        {
-            print(libro)
-        }
+//        for libro in libros
+//        {
+////            print(libro)
+//        }
+        
+        
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-
+activity.isHidden = true
+        activity.stopAnimating()
         self.title = "Libros Buscados"
-    
+//        self.contexto = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        
+      
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -122,6 +130,8 @@ class TVC: UITableViewController {
         }
         else
         {
+            activity.isHidden = false
+            activity.startAnimating()
             let cc = segue.destination as! ControlLibro
             let ip = self.tableView.indexPathForSelectedRow
             cc.codigo = self.libros[(ip?.row)!][1]
@@ -131,5 +141,8 @@ class TVC: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
+   
 
+    
 }
+
