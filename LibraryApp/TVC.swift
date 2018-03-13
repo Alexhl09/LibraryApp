@@ -24,20 +24,14 @@ class TVC: UITableViewController, NSFetchedResultsControllerDelegate {
 //    var contexto  : NSManagedObjectContext? = nil
 
  var libros : Array<Array<String>> = Array<Array<String>>()
+var l : Array<Array<String>> = Array<Array<String>>()
   
     override func viewWillAppear(_ animated: Bool) {
 //        for libro in libros
 //        {
 ////            print(libro)
 //        }
-        
-        for li in libros
-        {
-            for i in li
-            {
-                libro?.append(CoreDataHandler.fetchObject(isbn: i)!)
-            }
-        }
+       
         activity.isHidden = true
         activity.stopAnimating()
         
@@ -47,6 +41,13 @@ class TVC: UITableViewController, NSFetchedResultsControllerDelegate {
         super.viewDidLoad()
         activity.isHidden = true
         self.title = "Libros Buscados"
+        libro = CoreDataHandler.fetchObject()!
+        
+        for i in libro!
+        {
+            let l = [i.nombre!, i.isbn!]
+            libros.append(l)
+        }
 //        self.contexto = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
         
       

@@ -59,6 +59,21 @@ class CoreDataHandler: NSObject {
             return li
         }
     }
+    class func fetchObject()-> [Libros]?
+    {
+        
+        let context = getContext()
+        var libro : [Libros]? = nil
+        do
+        {
+            libro = try context.fetch(Libros.fetchRequest())
+            return libro
+        }
+        catch
+        {
+            return libro
+        }
+    }
     
 }
 
