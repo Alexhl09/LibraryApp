@@ -106,8 +106,7 @@ class Resultados: UIViewController {
 //            nuevaSeccionEntidad.setValue(UIImagePNGRepresentation(imagenLibro), forKey: "portada")
             CoreDataHandler.saveObject(nombre: nombreLibro, autor: autorLibro, isbn: isbn.text!, portada: UIImagePNGRepresentation(imagenLibro) as! NSData)
             autor.text = autorLibro
-           
-            
+         
           }
 //        do
 //        {
@@ -121,7 +120,6 @@ class Resultados: UIViewController {
         let newIndexPath = IndexPath(row: anterior.libros.count, section: 0)
         anterior.libros.append([nombreLibro,isbn.text!])
         anterior.tableView.insertRows(at: [newIndexPath], with: .automatic)
-       
     }
   
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

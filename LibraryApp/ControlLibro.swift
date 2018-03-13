@@ -19,6 +19,7 @@ import CoreData
 class ControlLibro: UIViewController {
 //    var contexto : NSManagedObjectContext? = nil
     var libro: Libros? = nil
+
     @IBOutlet weak var imag: UIImageView!
     @IBOutlet weak var autor: UILabel!
     @IBOutlet weak var isbn: UILabel!
@@ -53,7 +54,6 @@ class ControlLibro: UIViewController {
         nombreDeLibro.text = libro?.nombre!
         imag.image = UIImage(data: (libro?.portada)!)!
         autor.text = libro?.autor!
-        
         
 //        contexto = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
 

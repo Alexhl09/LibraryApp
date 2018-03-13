@@ -19,6 +19,7 @@ class TVC: UITableViewController, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var libroABuscar: UITextField!
     @IBOutlet weak var activity: UIActivityIndicatorView!
     var nombre = [ControlLibro]()
+    var libro: [Libros]? = nil
     var codigo = ""
 //    var contexto  : NSManagedObjectContext? = nil
 
@@ -30,13 +31,21 @@ class TVC: UITableViewController, NSFetchedResultsControllerDelegate {
 ////            print(libro)
 //        }
         
+        for li in libros
+        {
+            for i in li
+            {
+                libro?.append(CoreDataHandler.fetchObject(isbn: i)!)
+            }
+        }
+        activity.isHidden = true
+        activity.stopAnimating()
         
         
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-activity.isHidden = true
-        activity.stopAnimating()
+        activity.isHidden = true
         self.title = "Libros Buscados"
 //        self.contexto = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
         
@@ -69,13 +78,13 @@ activity.isHidden = true
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
        
-        
         cell.textLabel?.text = self.libros[indexPath.row][0]
-        // Configure the cell...
-
         return cell
     }
-    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        activity.startAnimating()
+        activity.isHidden = false
+    }
 
     /*
     // Override to support conditional editing of the table view.
@@ -121,7 +130,8 @@ activity.isHidden = true
         // Pass the selected object to the new view controller.
     }
     */
-    
+
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier! == "resultado")
         {
